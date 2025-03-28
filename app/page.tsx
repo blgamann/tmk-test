@@ -2,12 +2,23 @@ import Guide from "./components/Guide";
 import RatingScale from "./components/RatingScale";
 import ProgressBar from "./components/ProgressBar";
 import Button from "./components/Button";
+import ChatBubble from "./components/ChatBubble";
+
 export default function Home() {
   return (
     <div className="min-h-screen flex-col items-center justify-center bg-white">
       <ProgressBar currentStep={1} totalSteps={5} />
       <div className="w-full px-5">
         <Guide />
+        <div className="flex flex-col gap-4 w-full">
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+          <ChatBubble message="안녕하세요" />
+        </div>
         <div className="flex flex-col gap-4 w-full">
           <RatingScale statement="사람 많은 장소에 오래 있으면 지친다" />
           <RatingScale statement="감정적인 갈등이나 눈치를 봐야하는 상황이 많다" />
