@@ -20,7 +20,9 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
         />
       </head>
-      <body className="font-['Pretendard']">{children}</body>
+      <body className="font-['Pretendard'] max-w-[400px] mx-auto bg-gray-50">
+        {children}
+      </body>
     </html>
   );
 }

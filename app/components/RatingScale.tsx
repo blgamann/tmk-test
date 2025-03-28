@@ -16,8 +16,8 @@ export default function RatingScale({ statement }: RatingScaleProps) {
   };
 
   return (
-    <div className="w-min-[346px] w-full bg-gray-50 rounded-lg">
-      <h2 className="text-black text-[14px] font-medium ml-5 mt-8 mb-12">
+    <div className="w-min-[346px] w-full bg-[#F9F9F9] rounded-lg">
+      <h2 className="text-black text-[14px] font-medium ml-5 mt-6 mb-10">
         {statement}
       </h2>
 
@@ -44,7 +44,7 @@ export default function RatingScale({ statement }: RatingScaleProps) {
       </div>
 
       {/* Labels */}
-      <div className="flex justify-between px-4 pb-8 mt-4">
+      <div className="flex justify-between px-4 pb-6 mt-4">
         <span className="text-[11px] text-[#878787] font-medium text-center">
           전혀 아니다
         </span>
