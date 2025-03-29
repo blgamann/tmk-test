@@ -57,11 +57,13 @@ export default function MindReportPage() {
       // 모든 점수가 1점 이하인지 확인
       const allScoresLow = Object.entries(results.mindScores)
         .filter(([key]) => key !== "긍정") // 긍정 제외
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .every(([_, score]) => score <= 1);
 
       // 점수가 고르게 분산되어 있는지 확인
       const scores = Object.entries(results.mindScores)
         .filter(([key]) => key !== "긍정") // 긍정 제외
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map(([_, score]) => score);
 
       // 모든 점수가 마이너스인 경우
