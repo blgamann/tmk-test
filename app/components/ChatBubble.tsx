@@ -1,21 +1,22 @@
 "use client";
 
-import { useState } from "react";
-
 interface ChatBubbleProps {
   message: string;
-  variant?: "default" | "highlight";
+  isSelected: boolean;
+  onClick: () => void;
 }
 
-export default function ChatBubble({ message }: ChatBubbleProps) {
-  const [isSelected, setIsSelected] = useState(false);
-
+export default function ChatBubble({
+  message,
+  isSelected,
+  onClick,
+}: ChatBubbleProps) {
   return (
     <div
       className={`w-full flex gap-3.5 rounded-[6px] bg-[#F9F9F9] items-center h-14 cursor-pointer ${
         isSelected ? "border border-[#FFC744] bg-[rgba(255,199,68,0.20)]" : ""
       }`}
-      onClick={() => setIsSelected(!isSelected)}
+      onClick={onClick}
     >
       <button
         className={`ml-3.5 w-[18px] h-[18px] rounded-full border-4 flex-shrink-0 hover:cursor-pointer
@@ -26,7 +27,7 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
             }
           `}
       />
-      <p className="text-black text-[14px] font-medium">{message}</p>
+      <p className="text-black text-[14px] font-medium mr-3.5">{message}</p>
     </div>
   );
 }

@@ -1,32 +1,32 @@
-import Guide from "./components/Guide";
-import RatingScale from "./components/RatingScale";
-import ProgressBar from "./components/ProgressBar";
-import Button from "./components/Button";
-import ChatBubble from "./components/ChatBubble";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex-col items-center justify-center bg-white">
-      <ProgressBar currentStep={1} totalSteps={5} />
-      <div className="w-full px-5">
-        <Guide />
-        <div className="flex flex-col gap-4 w-full">
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
-          <ChatBubble message="안녕하세요" />
+    <div className="flex flex-col min-h-screen bg-[#FFD351] px-5 py-10">
+      <div className="text-black text-[26px] font-bold leading-[35px] whitespace-pre-line">
+        {"나의 상태를 관찰하러 오셨군요!\n반갑습니다. 👋"}
+      </div>
+      <div className="text-black text-[15px] font-normal leading-[22px] whitespace-pre-line mt-5">
+        {
+          "시간을 쓰는 나를 알아야, 시간의 주인이 될 수 있죠.\n나의 시간은 에너지, 집중력, 마음 상태와\n모두 연결되어 있어요.\n가장 솔직한 나로 테스트를 시작해 주세요."
+        }
+      </div>
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mb-10 flex justify-end">
+          <Image src="/main.svg" alt="status" width={194} height={194} />
         </div>
-        <div className="flex flex-col gap-4 w-full">
-          <RatingScale statement="사람 많은 장소에 오래 있으면 지친다" />
-          <RatingScale statement="감정적인 갈등이나 눈치를 봐야하는 상황이 많다" />
-          <RatingScale statement="해야 할 일은 많은데, 어디서부터 손대야 할지 모르겠다" />
-          <RatingScale statement="휴식시간에도 머릿속은 멈추지 않는다" />
-          <RatingScale statement="원하는 건 많은데, 몸이 잘 따라주지 않는다" />
-        </div>
-        <Button>다음</Button>
+        <Link
+          href="/status"
+          className="w-full h-[100px] rounded-[6px] text-black text-center text-[22px] font-semibold cursor-pointer bg-white px-6 flex"
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="text-[20px] text-black font-semibold">
+              테스트 하러가기
+            </div>
+            <Image src="/arrow.svg" alt="arrow" width={12} height={6} />
+          </div>
+        </Link>
       </div>
     </div>
   );

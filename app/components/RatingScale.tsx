@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
-
 interface RatingScaleProps {
   statement: string;
+  onRating: (rating: number) => void;
+  selectedValue: number;
 }
 
-export default function RatingScale({ statement }: RatingScaleProps) {
-  const [selectedValue, setSelectedValue] = useState(-1);
-
+export default function RatingScale({
+  statement,
+  onRating,
+  selectedValue,
+}: RatingScaleProps) {
   const totalPoints = 5;
-
-  const handlePointClick = (index: number) => {
-    setSelectedValue(index);
-  };
 
   return (
     <div className="w-min-[346px] w-full bg-[#F9F9F9] rounded-lg">
@@ -30,7 +28,7 @@ export default function RatingScale({ statement }: RatingScaleProps) {
           {Array.from({ length: totalPoints }).map((_, index) => (
             <button
               key={index}
-              onClick={() => handlePointClick(index)}
+              onClick={() => onRating(index)}
               className={`w-[18px] h-[18px] rounded-full border-4 border-gray-300 z-10 hover:cursor-pointer 
             ${
               index === selectedValue
