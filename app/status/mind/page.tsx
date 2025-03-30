@@ -147,10 +147,24 @@ export default function StatusMind() {
     // 긍정 점수 계산 (음수로 저장되므로 절대값 사용)
     const positiveScore = Math.abs(scores.긍정);
 
+    // 타입 결정 로직: 긍정 유형 판별
+    let finalType: MindType | "긍정" = topTypes[0]; // 기본값으로 최고 점수 유형 중 첫 번째 설정
+
+    // 모든 성향 점수가 마이너스이거나 0~1점으로 고르게 분포된 경우 긍정 유형으로 판별
+    const allTypesLowOrEqual = Object.entries(scoresWithoutPositive).every(
+      ([, score]) => score <= 1
+    );
+
+    // 모든 점수가 1점 이하이고 고르게 분산되어 있거나, 긍정 점수가 다른 점수보다 현저히 높을 경우
+    if (allTypesLowOrEqual || positiveScore > maxScore) {
+      finalType = "긍정";
+    }
+
     return {
       topTypes,
       scores,
       positiveScore,
+      finalType, // 최종 유형 반환
     };
   };
 
@@ -466,6 +480,7 @@ export default function StatusMind() {
             mindScores: mindResult.scores,
             topTypes: mindResult.topTypes,
             positiveScore: mindResult.positiveScore,
+            finalType: mindResult.finalType, // 최종 마음 유형 추가
           };
 
           console.log("Final Results:", finalResults);

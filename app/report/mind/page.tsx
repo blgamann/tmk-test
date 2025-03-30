@@ -20,6 +20,7 @@ interface MindTestResult {
   };
   topTypes: MindType[];
   positiveScore: number;
+  finalType: MindType | "긍정";
 }
 
 export default function MindReportPage() {
@@ -45,56 +46,17 @@ export default function MindReportPage() {
   const getMainDefenseMechanism = () => {
     if (!results) return null;
 
-    const topType = results.topTypes[0];
-
-    // 긍정 유형 조건 확인
-    const isPositiveType = results.positiveScore >= 3 || isEvenlyDistributed();
-
-    // 점수가 고르게 분포되어 있는지 확인하는 함수
-    function isEvenlyDistributed() {
-      if (!results) return false;
-
-      // 모든 점수가 1점 이하인지 확인
-      const allScoresLow = Object.entries(results.mindScores)
-        .filter(([key]) => key !== "긍정") // 긍정 제외
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .every(([_, score]) => score <= 1);
-
-      // 점수가 고르게 분산되어 있는지 확인
-      const scores = Object.entries(results.mindScores)
-        .filter(([key]) => key !== "긍정") // 긍정 제외
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .map(([_, score]) => score);
-
-      // 모든 점수가 마이너스인 경우
-      const allNegative = scores.every((score) => score < 0);
-
-      // 점수의 표준편차 계산 (고르게 분포되었는지 확인)
-      const average =
-        scores.reduce((sum, score) => sum + score, 0) / scores.length;
-      const variance =
-        scores.reduce((sum, score) => sum + Math.pow(score - average, 2), 0) /
-        scores.length;
-      const stdDev = Math.sqrt(variance);
-
-      // 표준편차가 낮으면 고르게 분포된 것으로 판단 (임계값: 0.5)
-      const evenlyDistributed = stdDev < 0.5 && average <= 1;
-
-      return allScoresLow || allNegative || evenlyDistributed;
-    }
-
-    if (isPositiveType) {
-      return {
-        type: "긍정",
-        emoji: "😊",
-        title: "내 심리적 방어기제는 잘 다루고 있어요.",
-        message: "긍정에 시간을 많이 쓸 수 있어요.",
-        description:
-          "심리적 방어기제를 잘 다스리며 사는, 긍정멘탈이에요. 심리적 방어기제가 골고루 있지만, 어디에도 끌려다니지 않고, 감정의 파도 속에서 중심을 잘 잡는 타입이에요. 불안하거나 움츠러드는 상황 속에서도, 스스로를 다독이고 균형을 찾을 줄 알아서, 어떤 일이든 마음먹은대로 시도하고 시작하는 편이에요. 크게 한쪽으로 치우치지 않는 감정 감각 덕분에, 타인의 감정에도 공감하면서도 나를 잃지 않네요. 때로는 너무 힘을 주기보다, 지금처럼 자연스럽게 감정을 흐르게 두는 것도 괜찮아요.",
-      };
-    }
+    const topType = results.finalType;
 
     switch (topType) {
+      case "긍정":
+        return {
+          type: "긍정",
+          emoji: "😊",
+          title: "심리적 방어기제를 잘 다스리며 사는, 긍정멘탈이에요.",
+          description:
+            "심리적 방어기제를 잘 다스리며 사는, 긍정멘탈이에요. 심리적 방어기제가 골고루 있지만, 어디에도 끌려다니지 않고, 감정의 파도 속에서 중심을 잘 잡는 타입이에요. 불안하거나 움츠러드는 상황 속에서도, 스스로를 다독이고 균형을 찾을 줄 알아서, 어떤 일이든 마음먹은대로 시도하고 시작하는 편이에요. 크게 한쪽으로 치우치지 않는 감정 감각 덕분에, 타인의 감정에도 공감하면서도 나를 잃지 않네요. 때로는 너무 힘을 주기보다, 지금처럼 자연스럽게 감정을 흐르게 두는 것도 괜찮아요.",
+        };
       case "불안":
         return {
           type: "불안",
@@ -158,21 +120,18 @@ export default function MindReportPage() {
   const getPositiveNegativeMessage = () => {
     if (!results) return null;
 
-    const topType = results.topTypes[0];
-    const isPositiveType = results.positiveScore >= 3;
-
-    if (isPositiveType) {
-      return {
-        positive: [
-          "하루 10분, 감정을 자유롭게 표현하는 낙서나, 그림을 그려봐요.",
-          "자주 가는 길을 산책하면서 떠오르는 생각을 돌아와서 메모해요.",
-          "오늘 마음에 스쳐 간 감정 한 가지만 써보고 잠이 들어요.",
-        ],
-        negative: [],
-      };
-    }
+    const topType = results.finalType;
 
     switch (topType) {
+      case "긍정":
+        return {
+          positive: [
+            "하루 10분, 감정을 자유롭게 표현하는 낙서나, 그림을 그려봐요.",
+            "자주 가는 길을 산책하면서 떠오르는 생각을 돌아와서 메모해요.",
+            "오늘 마음에 스쳐 간 감정 한 가지만 써보고 잠이 들어요.",
+          ],
+          negative: [],
+        };
       case "불안":
         return {
           positive: [
@@ -248,19 +207,16 @@ export default function MindReportPage() {
   const getTipsMessage = () => {
     if (!results) return null;
 
-    const topType = results.topTypes[0];
-    const isPositiveType = results.positiveScore >= 3;
-
-    if (isPositiveType) {
-      return {
-        title: "마음을 돌보는 팁",
-        tips: [
-          "이미 잘 하고 있지만, 스스로 풀어주는 연습을 계속하면, 긍정성을 유지할 수 있어요.",
-        ],
-      };
-    }
+    const topType = results.finalType;
 
     switch (topType) {
+      case "긍정":
+        return {
+          title: "마음을 돌보는 팁",
+          tips: [
+            "이미 잘 하고 있지만, 스스로 풀어주는 연습을 계속하면, 긍정성을 유지할 수 있어요.",
+          ],
+        };
       case "불안":
         return {
           title: "마음을 돌보는 팁",
@@ -373,7 +329,26 @@ export default function MindReportPage() {
           </div>
         </div>
 
-        {posNegMessage && (
+        {results.finalType === "긍정" && (
+          <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px]">
+            <div className="text-[16px] text-black font-bold mb-2.5">
+              이미 잘 하고 있지만, 스스로 풀어주는 연습을 계속하면, 긍정성을
+              유지할 수 있어요.
+            </div>
+            <ul className="list-disc pl-5 space-y-2">
+              {posNegMessage?.positive.map((item, index) => (
+                <li
+                  key={index}
+                  className="text-[14px] text-black font-medium leading-[24px]"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {posNegMessage && results.finalType !== "긍정" && (
           <>
             {posNegMessage.positive.length > 0 && (
               <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px]">
@@ -417,7 +392,7 @@ export default function MindReportPage() {
           </>
         )}
 
-        {tipsMessage && (
+        {tipsMessage && results.finalType !== "긍정" && (
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px]">
             <div className="mb-2.5">
               <div className="text-[16px] text-black font-bold">
@@ -427,11 +402,10 @@ export default function MindReportPage() {
             <div className="text-[14px] text-black font-medium leading-[24px] mb-7">
               {tipsMessage.tips[0]}
             </div>
-            {results.topTypes[0] !== "긍정" && (
-              <div className="mb-2 text-[16px] text-black font-bold">
-                {`${results.topTypes[0]}을 줄이기 위한 작은 리추얼`}
-              </div>
-            )}
+            <div className="mb-2 text-[16px] text-black font-bold">
+              {`${results.finalType}을 줄이기 위한 작은 리추얼`}
+            </div>
+
             <ul className="list-disc pl-5 space-y-2">
               {tipsMessage.tips.slice(1).map((tip, index) => (
                 <li

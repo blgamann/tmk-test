@@ -75,6 +75,7 @@ interface MindTestResults {
   };
   topTypes: MindType[];
   positiveScore: number;
+  finalType: MindType | "긍정";
 }
 
 export default function SummaryReportPage() {
@@ -303,43 +304,8 @@ export default function SummaryReportPage() {
 
     const mindInfoList = [];
 
-    // 긍정 유형 조건 확인
-    const isPositiveType =
-      mindResults.positiveScore >= 3 || isEvenlyDistributed();
-
-    // 점수가 고르게 분포되어 있는지 확인하는 함수
-    function isEvenlyDistributed() {
-      if (!mindResults) return false;
-
-      // 모든 점수가 1점 이하인지 확인
-      const allScoresLow = Object.entries(mindResults.mindScores)
-        .filter(([key]) => key !== "긍정") // 긍정 제외
-        .every(([, score]) => score <= 1);
-
-      // 점수가 고르게 분산되어 있는지 확인
-      const scores = Object.entries(mindResults.mindScores)
-        .filter(([key]) => key !== "긍정") // 긍정 제외
-        .map(([, score]) => score);
-
-      // 모든 점수가 마이너스인 경우
-      const allNegative = scores.every((score) => score < 0);
-
-      // 표준편차 계산 (간소화 버전)
-      const average =
-        scores.reduce((sum, score) => sum + score, 0) / scores.length;
-      const variance =
-        scores.reduce((sum, score) => sum + Math.pow(score - average, 2), 0) /
-        scores.length;
-      const stdDev = Math.sqrt(variance);
-
-      // 표준편차가 낮으면 고르게 분포된 것으로 판단 (임계값: 0.5)
-      const evenlyDistributed = stdDev < 0.5 && average <= 1;
-
-      return allScoresLow || allNegative || evenlyDistributed;
-    }
-
-    // 주요 방어기제 타입 확인
-    const mainType = isPositiveType ? "긍정" : mindResults.topTypes[0];
+    // finalType 사용
+    const mainType = mindResults.finalType;
 
     // 주요 심리 방어기제 정보 추가
     let emoji = "😊";
