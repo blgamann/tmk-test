@@ -444,14 +444,6 @@ export default function StatusMind() {
               <Button activated={true} onClick={() => router.push("/status")}>
                 홈으로 가기
               </Button>
-              <div className="mt-4">
-                <Button
-                  activated={true}
-                  onClick={() => router.push("/report/mind")}
-                >
-                  테스트 결과 보기
-                </Button>
-              </div>
             </div>
           </div>
         );
