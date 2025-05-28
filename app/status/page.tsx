@@ -147,18 +147,18 @@ export default function Status() {
             <div className="text-[14px] mb-6">
               다시 진행하시겠습니까? 진행 시 기존 결과는 삭제됩니다.
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleCancel}
-                className="flex-1 rounded-[6px] bg-gray-100 py-3 text-[16px] font-medium hover:bg-gray-200 transition-colors duration-200"
-              >
-                돌아가기
-              </button>
+            <div className="flex flex-col gap-3">
               <button
                 onClick={handleConfirm}
-                className="flex-1 rounded-[6px] bg-yellow-400 py-3 text-[16px] font-medium hover:bg-yellow-500 transition-colors duration-200"
+                className="w-full rounded-[6px] bg-yellow-400 py-3 text-[16px] font-medium hover:bg-yellow-500 transition-colors duration-200"
               >
-                다시 하기
+                다시 진행하기
+              </button>
+              <button
+                onClick={handleCancel}
+                className="w-full rounded-[6px] bg-gray-100 py-3 text-[16px] font-medium hover:bg-gray-200 transition-colors duration-200"
+              >
+                돌아가기
               </button>
             </div>
           </div>

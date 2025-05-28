@@ -7,6 +7,7 @@ import Image from "next/image";
 import Guide from "@/app/components/Guide";
 import RatingScale from "@/app/components/RatingScale";
 import ProgressBar from "@/app/components/ProgressBar";
+import RealTimeEnergyScoreDisplay from "@/app/components/RealTimeEnergyScoreDisplay";
 import Button from "@/app/components/Button";
 import ChatBubble from "@/app/components/ChatBubble";
 
@@ -461,14 +462,12 @@ export default function StatusEnergy() {
                 {"에너지 상태 테스트가\n완료되었습니다"}
               </div>
               <div className="text-center text-[14px] text-black font-medium leading-[24px] whitespace-pre-line">
-                {
-                  "집중력, 마음 상태 테스트까지 완료하시면\n결과 보고서가 열립니다."
-                }
+                {"모든 테스트를 완료하시면\n결과 보고서가 열립니다."}
               </div>
             </div>
             <div className="w-full px-5">
               <Button activated={true} onClick={() => router.push("/status")}>
-                홈으로 가기
+                다른 설문 하러 가기
               </Button>
             </div>
           </div>
@@ -630,6 +629,16 @@ export default function StatusEnergy() {
     };
   };
 
+  // 이전 스텝으로 이동
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      // 첫 번째 스텝에서 이전 버튼을 누르면 상태 선택 페이지로 이동
+      router.push("/status");
+    }
+  };
+
   const handleNextStep = () => {
     if (step === 1) {
       if (statusRatings[1].every((rating) => rating !== -1)) {
@@ -734,8 +743,17 @@ export default function StatusEnergy() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <ProgressBar currentStep={step} totalSteps={10} />
+      <div className="px-5">
+        <RealTimeEnergyScoreDisplay
+          currentStep={step}
+          statusRatings={statusRatings}
+          selectedEnergyMethods={selectedEnergyMethods}
+          selectedTimeConditions={selectedTimeConditions}
+          sleepRatings={sleepRatings}
+        />
+      </div>
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 11 && (
           <Guide
@@ -746,10 +764,16 @@ export default function StatusEnergy() {
         )}
         {renderStep()}
         {step < 11 && (
-          <div className="mt-9 mb-4">
+          <div className="mt-9 mb-4 space-y-3">
             <Button activated={isButtonActivated()} onClick={handleNextStep}>
               다 골랐어요!
             </Button>
+            <button
+              onClick={handlePreviousStep}
+              className="w-full h-[50px] rounded-[6px] border border-gray-300 bg-white text-gray-600 text-[16px] font-medium hover:bg-gray-50 transition-colors duration-200"
+            >
+              이전으로
+            </button>
           </div>
         )}
       </div>

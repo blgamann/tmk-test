@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SectionTitle from "@/app/components/SectionTitle";
 import Button from "@/app/components/Button";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type EnergyType = "사람과의 연결" | "혼자만의 시간" | "감각 몰입";
 type TimeEnergyType =
@@ -255,6 +256,17 @@ export default function EnergyReportPage() {
               {sleepRhythmInfo.message}
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-6 justify-center">
+        {/* <div className="flex flex-col items-center gap-2 mt-12">
+          <Image src="/share.svg" alt="Loading" width={40} height={100} />
+          <span className="text-xs">이미지 다운 받기</span>
+        </div> */}
+        <div className="flex flex-col items-center gap-2 mt-12">
+          <Image src="/download.svg" alt="Loading" width={40} height={100} />
+          <span className="text-xs">이미지 다운 받기</span>
         </div>
       </div>
 

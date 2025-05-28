@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import Guide from "@/app/components/Guide";
 import ProgressBar from "@/app/components/ProgressBar";
+import RealTimeMindScoreDisplay from "@/app/components/RealTimeMindScoreDisplay";
 import Button from "@/app/components/Button";
 import ChatBubble from "@/app/components/ChatBubble";
 
@@ -76,7 +77,7 @@ export default function StatusMind() {
     if (selectedMindChoices[1]?.includes(2)) scores.비교 += 1;
     if (selectedMindChoices[1]?.includes(3)) scores.완벽주의 += 2;
     if (selectedMindChoices[1]?.includes(4)) scores.자기의심 += 1;
-    if (selectedMindChoices[1]?.includes(5)) scores.긍정 -= 1;
+    if (selectedMindChoices[1]?.includes(5)) scores.긍정 += 1;
     if (selectedMindChoices[1]?.includes(6)) scores.회피 += 1;
     if (selectedMindChoices[1]?.includes(7)) scores.눈치 += 1;
 
@@ -87,11 +88,11 @@ export default function StatusMind() {
     if (selectedMindChoices[2]?.includes(4)) scores.비교 += 1.5;
     if (selectedMindChoices[2]?.includes(5)) scores.불안 += 1;
     if (selectedMindChoices[2]?.includes(6)) scores.눈치 += 1;
-    if (selectedMindChoices[2]?.includes(7)) scores.긍정 -= 1;
+    if (selectedMindChoices[2]?.includes(7)) scores.긍정 += 1;
 
     // 상황 3
     if (selectedMindChoices[3]?.includes(1)) scores.자기의심 += 1;
-    if (selectedMindChoices[3]?.includes(2)) scores.긍정 -= 1;
+    if (selectedMindChoices[3]?.includes(2)) scores.긍정 += 1;
     if (selectedMindChoices[3]?.includes(3)) scores.완벽주의 += 1.5;
     if (selectedMindChoices[3]?.includes(4)) scores.눈치 += 1;
     if (selectedMindChoices[3]?.includes(5)) scores.비교 += 1;
@@ -103,7 +104,7 @@ export default function StatusMind() {
     if (selectedMindChoices[4]?.includes(2)) scores.비교 += 1;
     if (selectedMindChoices[4]?.includes(3)) scores.완벽주의 += 1;
     if (selectedMindChoices[4]?.includes(4)) scores.자기의심 += 1.5;
-    if (selectedMindChoices[4]?.includes(5)) scores.긍정 -= 1;
+    if (selectedMindChoices[4]?.includes(5)) scores.긍정 += 1;
     if (selectedMindChoices[4]?.includes(6)) scores.눈치 += 1;
     if (selectedMindChoices[4]?.includes(7)) scores.회피 += 1;
 
@@ -111,7 +112,7 @@ export default function StatusMind() {
     if (selectedMindChoices[5]?.includes(1)) scores.눈치 += 1.5;
     if (selectedMindChoices[5]?.includes(2)) scores.회피 += 1;
     if (selectedMindChoices[5]?.includes(3)) scores.자기의심 += 1;
-    if (selectedMindChoices[5]?.includes(4)) scores.긍정 -= 1;
+    if (selectedMindChoices[5]?.includes(4)) scores.긍정 += 1;
     if (selectedMindChoices[5]?.includes(5)) scores.불안 += 1;
     if (selectedMindChoices[5]?.includes(6)) scores.비교 += 1;
     if (selectedMindChoices[5]?.includes(7)) scores.완벽주의 += 1;
@@ -119,7 +120,7 @@ export default function StatusMind() {
     // 상황 6
     if (selectedMindChoices[6]?.includes(1)) scores.불안 += 1;
     if (selectedMindChoices[6]?.includes(2)) scores.눈치 += 1;
-    if (selectedMindChoices[6]?.includes(3)) scores.긍정 -= 1;
+    if (selectedMindChoices[6]?.includes(3)) scores.긍정 += 1;
     if (selectedMindChoices[6]?.includes(4)) scores.비교 += 1;
     if (selectedMindChoices[6]?.includes(5)) scores.완벽주의 += 1;
     if (selectedMindChoices[6]?.includes(6)) scores.회피 += 1.5;
@@ -144,18 +145,18 @@ export default function StatusMind() {
       .filter(([, score]) => score === maxScore)
       .map(([type]) => type as MindType);
 
-    // 긍정 점수 계산 (음수로 저장되므로 절대값 사용)
-    const positiveScore = Math.abs(scores.긍정);
+    // 긍정 점수 계산 (이제 양수)
+    const positiveScore = scores.긍정;
 
     // 타입 결정 로직: 긍정 유형 판별
     let finalType: MindType | "긍정" = topTypes[0]; // 기본값으로 최고 점수 유형 중 첫 번째 설정
 
-    // 모든 성향 점수가 마이너스이거나 0~1점으로 고르게 분포된 경우 긍정 유형으로 판별
+    // 모든 성향 점수가 1점 이하인 경우 긍정 유형으로 판별
     const allTypesLowOrEqual = Object.entries(scoresWithoutPositive).every(
       ([, score]) => score <= 1
     );
 
-    // 모든 점수가 1점 이하이고 고르게 분산되어 있거나, 긍정 점수가 다른 점수보다 현저히 높을 경우
+    // 모든 점수가 1점 이하이거나, 긍정 점수가 다른 점수보다 현저히 높을 경우
     if (allTypesLowOrEqual || positiveScore > maxScore) {
       finalType = "긍정";
     }
@@ -435,14 +436,12 @@ export default function StatusMind() {
                 {"마음 상태 테스트가\n완료되었습니다"}
               </div>
               <div className="text-center text-[14px] text-black font-medium leading-[24px] whitespace-pre-line">
-                {
-                  "모든 테스트를 완료하시면\n결과 보고서가 열립니다."
-                }
+                {"모든 테스트를 완료하시면\n결과 보고서가 열립니다."}
               </div>
             </div>
             <div className="w-full px-5">
               <Button activated={true} onClick={() => router.push("/status")}>
-                홈으로 가기
+                다른 설문 하러 가기
               </Button>
             </div>
           </div>
@@ -457,6 +456,16 @@ export default function StatusMind() {
       return (selectedMindChoices[step]?.length ?? 0) > 0;
     }
     return false;
+  };
+
+  // 이전 스텝으로 이동
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      // 첫 번째 스텝에서 이전 버튼을 누르면 상태 선택 페이지로 이동
+      router.push("/status");
+    }
   };
 
   // 다음 스텝으로 이동 및 점수 계산
@@ -496,6 +505,12 @@ export default function StatusMind() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-between bg-white">
       <ProgressBar currentStep={step} totalSteps={6} />
+      <div className="px-5">
+        <RealTimeMindScoreDisplay
+          currentStep={step}
+          selectedMindChoices={selectedMindChoices}
+        />
+      </div>
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 7 && (
           <Guide
@@ -506,10 +521,16 @@ export default function StatusMind() {
         )}
         {renderStep()}
         {step < 7 && (
-          <div className="mt-9 mb-4">
+          <div className="mt-9 mb-4 space-y-3">
             <Button activated={isButtonActivated()} onClick={handleNextStep}>
               다 골랐어요!
             </Button>
+            <button
+              onClick={handlePreviousStep}
+              className="w-full h-[50px] rounded-[6px] border border-gray-300 bg-white text-gray-600 text-[16px] font-medium hover:bg-gray-50 transition-colors duration-200"
+            >
+              이전으로
+            </button>
           </div>
         )}
       </div>

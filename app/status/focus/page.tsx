@@ -7,6 +7,7 @@ import Image from "next/image";
 import Guide from "@/app/components/Guide";
 import RatingScale from "@/app/components/RatingScale";
 import ProgressBar from "@/app/components/ProgressBar";
+import RealTimeFocusScoreDisplay from "@/app/components/RealTimeFocusScoreDisplay";
 import Button from "@/app/components/Button";
 import ChatBubble from "@/app/components/ChatBubble";
 
@@ -218,14 +219,12 @@ export default function StatusFocus() {
                 {"집중력 테스트가\n완료되었습니다"}
               </div>
               <div className="text-center text-[14px] text-black font-medium leading-[24px] whitespace-pre-line">
-                {
-                  "에너지, 마음 상태 테스트까지 완료하시면\n결과 보고서가 열립니다."
-                }
+                {"모든 테스트를 완료하시면\n결과 보고서가 열립니다."}
               </div>
             </div>
             <div className="w-full px-5">
               <Button activated={true} onClick={() => router.push("/status")}>
-                홈으로 가기
+                다른 설문 하러 가기
               </Button>
             </div>
           </div>
@@ -247,16 +246,20 @@ export default function StatusFocus() {
 
   // 집중력 지속성 점수 계산
   const calculateFocusPersistenceScore = () => {
-    // 1단계 평가 응답의 총점 계산
-    const totalScore = focusRatings[1].reduce((sum, rating) => sum + rating, 0);
+    // 1단계 평가 응답의 총점 계산 (0->1, 1->2, 2->3, 3->4, 4->5로 변환)
+    const totalScore = focusRatings[1].reduce((sum, rating) => {
+      return rating !== -1 ? sum + (rating + 1) : sum;
+    }, 0);
 
     let persistenceType;
-    if (totalScore <= 9) {
-      persistenceType = "🔥강한 집중 지속력";
-    } else if (totalScore <= 14) {
-      persistenceType = "⛈️잘 변하는 집중 지속력";
+    if (totalScore >= 4 && totalScore <= 9) {
+      persistenceType = "🔥집중 지속력 안정형";
+    } else if (totalScore >= 10 && totalScore <= 14) {
+      persistenceType = "⛈️집중 지속력 가변형";
+    } else if (totalScore >= 15 && totalScore <= 20) {
+      persistenceType = "🌪️집중 흐름 불안정형";
     } else {
-      persistenceType = "🌪️약한 집중 지속력";
+      persistenceType = "측정 중...";
     }
 
     return {
@@ -321,24 +324,77 @@ export default function StatusFocus() {
     };
   };
 
-  // 문맥형/비확장형 판단
-  const determineContextType = () => {
-    // 유형별 총점 계산
+  // 집중력 특성 타입 결정
+  const determineFocusCharacteristicType = () => {
     const { sensory, environment, time } = updateFocusTypeScores();
-    const totalScore = sensory + environment + time;
-
-    // 모든 유형의 총점이 일정 기준 미만인 경우(선택 항목 수 기준)
-    const totalItems = Object.values(selectedFocusTypes).reduce(
+    const totalSelections = Object.values(selectedFocusTypes).reduce(
       (sum, selections) => sum + selections.length,
       0
     );
 
-    // 전체 항목 대비 선택 비율이 50% 미만이면 "문맥형", 그 이상이면 "비확장형"
-    if (totalScore / totalItems < 0.5) {
-      return "문맥형";
+    if (totalSelections === 0) return "미정";
+
+    // 3점 이상인 유형들 확인
+    const hasHighSensory = sensory >= 3;
+    const hasHighEnvironment = environment >= 3;
+    const hasHighTime = time >= 3;
+
+    // 모든 유형이 3점 미만이면 둔감형
+    if (!hasHighSensory && !hasHighEnvironment && !hasHighTime) {
+      return "둔감형/미확정형";
     }
 
-    return "비확장형";
+    // 3점 이상인 유형 중에서 최고 점수 찾기
+    let maxScore = 0;
+    let candidateTypes: string[] = [];
+
+    if (hasHighSensory) {
+      if (sensory > maxScore) {
+        maxScore = sensory;
+        candidateTypes = ["감각"];
+      } else if (sensory === maxScore) {
+        candidateTypes.push("감각");
+      }
+    }
+
+    if (hasHighEnvironment) {
+      if (environment > maxScore) {
+        maxScore = environment;
+        candidateTypes = ["환경"];
+      } else if (environment === maxScore) {
+        candidateTypes.push("환경");
+      }
+    }
+
+    if (hasHighTime) {
+      if (time > maxScore) {
+        maxScore = time;
+        candidateTypes = ["시간"];
+      } else if (time === maxScore) {
+        candidateTypes.push("시간");
+      }
+    }
+
+    // 점수가 같은 경우 우선순위: 감각 > 환경 > 시간
+    if (candidateTypes.includes("감각")) {
+      return "감각 민감형";
+    } else if (candidateTypes.includes("환경")) {
+      return "환경 루틴형";
+    } else if (candidateTypes.includes("시간")) {
+      return "시간 집중형";
+    }
+
+    return "미정";
+  };
+
+  // 이전 스텝으로 이동
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      // 첫 번째 스텝에서 이전 버튼을 누르면 상태 선택 페이지로 이동
+      router.push("/status");
+    }
   };
 
   // 다음 스텝으로 이동 및 점수 계산
@@ -356,7 +412,7 @@ export default function StatusFocus() {
         // 마지막 스텝에서 최종 결과 계산 및 저장
         const persistenceResult = calculateFocusPersistenceScore();
         const typeScores = updateFocusTypeScores();
-        const contextType = determineContextType();
+        const contextType = determineFocusCharacteristicType();
 
         // 최종 결과 객체 구성
         const finalResults = {
@@ -393,8 +449,15 @@ export default function StatusFocus() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <ProgressBar currentStep={step} totalSteps={5} />
+      <div className="px-5">
+        <RealTimeFocusScoreDisplay
+          currentStep={step}
+          focusRatings={focusRatings}
+          selectedFocusTypes={selectedFocusTypes}
+        />
+      </div>
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 6 && (
           <Guide
@@ -405,10 +468,16 @@ export default function StatusFocus() {
         )}
         {renderStep()}
         {step < 6 && (
-          <div className="mt-9 mb-4">
+          <div className="mt-9 mb-4 space-y-3">
             <Button activated={isButtonActivated()} onClick={handleNextStep}>
               다 골랐어요!
             </Button>
+            <button
+              onClick={handlePreviousStep}
+              className="w-full h-[50px] rounded-[6px] border border-gray-300 bg-white text-gray-600 text-[16px] font-medium hover:bg-gray-50 transition-colors duration-200"
+            >
+              이전으로
+            </button>
           </div>
         )}
       </div>
