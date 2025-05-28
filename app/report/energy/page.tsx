@@ -45,6 +45,15 @@ export default function EnergyReportPage() {
   const [results, setResults] = useState<EnergyTestResults | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Debug 모드 설정 (개발용)
+  const [debug] = useState(false);
+
+  // 각 섹션별 다른 답변 보기 상태
+  const [showAlternateBattery, setShowAlternateBattery] = useState(0); // 0: 실제 결과, 1,2: 다른 결과들
+  const [showAlternateEnergyType, setShowAlternateEnergyType] = useState(0);
+  const [showAlternateTimeType, setShowAlternateTimeType] = useState(0);
+  const [showAlternateSleepType, setShowAlternateSleepType] = useState(0);
+
   useEffect(() => {
     try {
       const storedResults = localStorage.getItem("energy_test_results");
@@ -71,6 +80,121 @@ export default function EnergyReportPage() {
         return "";
     }
   };
+
+  // 모든 배터리 레벨 정보
+  const getAllBatteryInfo = () => [
+    {
+      level: "good",
+      emoji: "⚡",
+      percentage: "80%이상",
+      message: getBatteryMessage("good"),
+    },
+    {
+      level: "not bad",
+      emoji: "🌥",
+      percentage: "50%~70%",
+      message: getBatteryMessage("not bad"),
+    },
+    {
+      level: "bad",
+      emoji: "🌪",
+      percentage: "0%~40%",
+      message: getBatteryMessage("bad"),
+    },
+  ];
+
+  // 모든 에너지 타입 정보
+  const getAllEnergyTypeInfo = () => [
+    {
+      types: ["사람과의 연결"],
+      emoji: "💬",
+      title: "사람과의 연결",
+      message:
+        "사람과의 관계 속에서 활력을 얻어요. 친밀한 사람과의 깊은 대화, 활기가 있는 모임, 함께 하는 프로젝트에서 에너지가 충전됩니다. 사람과 연결되어 있을 때 더 창의적이고 기분도 올라갑니다.",
+    },
+    {
+      types: ["혼자만의 시간"],
+      emoji: "🌿",
+      title: "혼자만의 시간",
+      message:
+        "혼자만의 고요한 공간에서 에너지를 회복하는 사람입니다. 타인과 함께 있는 것도 좋아하지만, 에너지를 써야 하는 타입이라 혼자만의 시간이 중요해요. 나와 함께 온전히 있음으로써 휴식이 되는 타입이에요.",
+    },
+    {
+      types: ["감각 몰입"],
+      emoji: "🎨",
+      title: "감각 몰입",
+      message:
+        "감각 자극에서 생기를 찾는 사람입니다. 음악, 향, 자연, 색, 미적 자극이 있는 곳에서 에너지가 올라갑니다. 새로운 자극이 있는 감각적인 환경에서 깊이 회복할 수 있는 타입이에요.",
+    },
+    {
+      types: ["유연하게"],
+      emoji: "🔁",
+      title: "유연하게 충전 타입",
+      message:
+        "고정된 방식보다 다양한 자극을 통해 회복하는 타입입니다. 때로는 사람, 때로는 혼자, 때로는 감각이 에너지를 올리는데 도움이 되기 때문에, 스스로 어떤 날 어떤 충전이 필요한지를 직관적으로 살펴보는 게 중요합니다.",
+    },
+  ];
+
+  // 모든 시간대별 에너지 타입 정보
+  const getAllTimeEnergyTypeInfo = () => [
+    {
+      types: ["아침 에너지 타입"],
+      emoji: "🌅",
+      title: "아침 에너지 타입",
+      message:
+        "하루를 가장 잘 시작하는 타입입니다. 아침에 머리가 맑고 집중력이 좋아, 기상 후~오전까지가 에너지 피크 타임이네요. 반대로 오후에는 에너지가 점차 빠져나가고 무기력이 올 수 있으므로, 중요한 일은 아침에 집중적으로 배치하는 것이 좋습니다.",
+    },
+    {
+      types: ["낮 에너지 타입"],
+      emoji: "🌤",
+      title: "낮 에너지 타입",
+      message:
+        "오전보다 점심 이후에 에너지가 자연스럽게 올라가는 타입입니다. 아침에는 여유롭게 워밍업하는 루틴이 필요하며, 오후 2~4시 사이가 최고의 몰입 구간이 될 수 있어요. 하루 일정을 설계할 때, 핵심 활동은 오후로 배치해 보세요.",
+    },
+    {
+      types: ["저녁 에너지 타입"],
+      emoji: "🌇",
+      title: "저녁 에너지 타입",
+      message:
+        "해가 질 무렵부터 집중력과 활력이 상승하는 타입입니다. 오전에는 몸과 마음이 천천히 깨어나므로, 감각을 깨우는 시간을 가지고, 무리한 일정 배치는 피하는 것이 좋습니다. 창의적인 작업, 기획, 사람과의 소통 등은 오후~저녁에 배치하면 퍼포먼스가 극대화됩니다.",
+    },
+    {
+      types: ["밤 에너지 타입"],
+      emoji: "🌙",
+      title: "밤 에너지 타입",
+      message:
+        "늦은 밤, 조용한 시간에 가장 에너지가 살아나는 타입입니다. 일반적인 낮 중심 생활 리듬과 어긋나기 쉬워, 낮 동안 피로가 쌓이고, 밤에야 비로소 나다워집니다. 창의적 작업과 자기 몰입은 심야에 잘 되지만, 수면 리듬 조정과 수면 질 확보가 매우 중요합니다. 기상 시간은 꼭 규칙적으로 할 수 있게 정하면 좋아요.",
+    },
+    {
+      types: ["자유자재"],
+      emoji: "🔁",
+      title: "자유자재 에너지 타입",
+      message:
+        "특정 시간대에만 에너지가 몰리지 않고, 여러 시간대에 걸쳐 다양한 리듬을 경험하는 타입입니다. 자신의 일/업무/생활 스타일에 따라 유연하게 시간을 활용하면 좋아요. 어떤 시간에 어떤 일을 하기에 가장 적합한지를 스스로 실험하고 찾는 것이 좋습니다. 아직 정확히 자신을 몰라서일 수 있거든요.",
+    },
+  ];
+
+  // 모든 수면 리듬 타입 정보
+  const getAllSleepRhythmInfo = () => [
+    {
+      type: "회복형 수면 리듬",
+      emoji: "☀️",
+      message:
+        "비교적 안정적인 리듬과 수면의 질이 유지하고 있어요. 몸이 잠들고 깨어나는 리듬이 자연스럽고, 에너지 회복도 잘 이루어지는 편입니다. 지금처럼 일정하게 자고 일어나는 루틴을 유지하면 좋아요. 잠이 나에게 중요한 에너지원이 되고 있으니까요.",
+    },
+    {
+      type: "불균형 수면 리듬",
+      emoji: "🌥",
+      message:
+        "수면의 양이나 시간보다, 질과 패턴에서 불균형 신호가 나타나고 있네요. 생각이 많거나, 잠들기 전 디지털 사용으로 회복이 늦어지고 있을 수 있어요. 하루 에너지 흐름도 수면 상태와 연결되어 있으므로, 작은 루틴을 조정해 보세요.",
+    },
+    {
+      type: "에너지 고갈형 수면 습관",
+      emoji: "🌙",
+      message:
+        "수면이 회복이 아닌, '버티는 시간'처럼 느껴지는 상태일 수 있어요. 잠을 자도 개운하지 않거나, 밤에 제대로 잠들지 못한다면 몸이 보내는 중요한 신호이므로, 잠을 잘 자기 위한 나만의 방법을 찾는데 시간을 투자하세요. 잠이 회복되면, 에너지도 자연스레 해결될 수 있어요.",
+    },
+  ];
 
   // 에너지 충전 유형에 따른 메시지
   const getEnergyTypeMessage = (types: EnergyType[]) => {
@@ -171,6 +295,7 @@ export default function EnergyReportPage() {
       <div className="text-[26px] text-black font-bold mb-16">
         나의 에너지 상태 보고서
       </div>
+
       <div className="flex flex-col gap-12">
         <div>
           <SectionTitle>첫 번째, 에너지 배터리</SectionTitle>
@@ -180,15 +305,49 @@ export default function EnergyReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {results.battery.status.level === "good" && "⚡"}
-              {results.battery.status.level === "not bad" && "🌥"}
-              {results.battery.status.level === "bad" && "🌪"}
-              {" 에너지 배터리 " + results.battery.status.percentage}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {batteryMessage}
-            </div>
+            {(() => {
+              const allBatteryInfo = getAllBatteryInfo();
+              const currentInfo =
+                showAlternateBattery === 0
+                  ? {
+                      level: results.battery.status.level,
+                      emoji:
+                        results.battery.status.level === "good"
+                          ? "⚡"
+                          : results.battery.status.level === "not bad"
+                          ? "🌥"
+                          : "🌪",
+                      percentage: results.battery.status.percentage,
+                      message: batteryMessage,
+                    }
+                  : allBatteryInfo[showAlternateBattery - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.emoji} 에너지 배터리 {currentInfo.percentage}
+                    {debug && showAlternateBattery === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternateBattery((prev) => (prev + 1) % 4)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternateBattery + 1}/4)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
@@ -200,18 +359,57 @@ export default function EnergyReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {results.energyType.types.includes("사람과의 연결") && "💬 "}
-              {results.energyType.types.includes("혼자만의 시간") && "🌿 "}
-              {results.energyType.types.includes("감각 몰입") && "🎨 "}
-              {results.energyType.types.length > 1 && "🔁 "}
-              {results.energyType.types.length > 1
-                ? "유연하게 충전 타입"
-                : results.energyType.types.join(", ")}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {energyTypeMessage}
-            </div>
+            {(() => {
+              const allEnergyTypeInfo = getAllEnergyTypeInfo();
+              const currentInfo =
+                showAlternateEnergyType === 0
+                  ? {
+                      emoji:
+                        results.energyType.types.includes("사람과의 연결") &&
+                        results.energyType.types.length === 1
+                          ? "💬"
+                          : results.energyType.types.includes(
+                              "혼자만의 시간"
+                            ) && results.energyType.types.length === 1
+                          ? "🌿"
+                          : results.energyType.types.includes("감각 몰입") &&
+                            results.energyType.types.length === 1
+                          ? "🎨"
+                          : "🔁",
+                      title:
+                        results.energyType.types.length > 1
+                          ? "유연하게 충전 타입"
+                          : results.energyType.types.join(", "),
+                      message: energyTypeMessage,
+                    }
+                  : allEnergyTypeInfo[showAlternateEnergyType - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.emoji} {currentInfo.title}
+                    {debug && showAlternateEnergyType === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternateEnergyType((prev) => (prev + 1) % 5)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternateEnergyType + 1}/5)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
@@ -223,21 +421,63 @@ export default function EnergyReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {results.timeEnergyType.types.includes("아침 에너지 타입") &&
-                "🌅 "}
-              {results.timeEnergyType.types.includes("낮 에너지 타입") && "🌤 "}
-              {results.timeEnergyType.types.includes("저녁 에너지 타입") &&
-                "🌇 "}
-              {results.timeEnergyType.types.includes("밤 에너지 타입") && "🌙 "}
-              {results.timeEnergyType.types.length > 1 && "🔁 "}
-              {results.timeEnergyType.types.length > 1
-                ? "자유자재 에너지 타입"
-                : results.timeEnergyType.types.join(", ")}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {timeEnergyTypeMessage}
-            </div>
+            {(() => {
+              const allTimeEnergyTypeInfo = getAllTimeEnergyTypeInfo();
+              const currentInfo =
+                showAlternateTimeType === 0
+                  ? {
+                      emoji:
+                        results.timeEnergyType.types.includes(
+                          "아침 에너지 타입"
+                        ) && results.timeEnergyType.types.length === 1
+                          ? "🌅"
+                          : results.timeEnergyType.types.includes(
+                              "낮 에너지 타입"
+                            ) && results.timeEnergyType.types.length === 1
+                          ? "🌤"
+                          : results.timeEnergyType.types.includes(
+                              "저녁 에너지 타입"
+                            ) && results.timeEnergyType.types.length === 1
+                          ? "🌇"
+                          : results.timeEnergyType.types.includes(
+                              "밤 에너지 타입"
+                            ) && results.timeEnergyType.types.length === 1
+                          ? "🌙"
+                          : "🔁",
+                      title:
+                        results.timeEnergyType.types.length > 1
+                          ? "자유자재 에너지 타입"
+                          : results.timeEnergyType.types.join(", "),
+                      message: timeEnergyTypeMessage,
+                    }
+                  : allTimeEnergyTypeInfo[showAlternateTimeType - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.emoji} {currentInfo.title}
+                    {debug && showAlternateTimeType === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternateTimeType((prev) => (prev + 1) % 6)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternateTimeType + 1}/6)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
@@ -249,12 +489,43 @@ export default function EnergyReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {sleepRhythmInfo.emoji} {results.sleepRhythm.type}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {sleepRhythmInfo.message}
-            </div>
+            {(() => {
+              const allSleepRhythmInfo = getAllSleepRhythmInfo();
+              const currentInfo =
+                showAlternateSleepType === 0
+                  ? {
+                      emoji: sleepRhythmInfo.emoji,
+                      type: results.sleepRhythm.type,
+                      message: sleepRhythmInfo.message,
+                    }
+                  : allSleepRhythmInfo[showAlternateSleepType - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.emoji} {currentInfo.type}
+                    {debug && showAlternateSleepType === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternateSleepType((prev) => (prev + 1) % 4)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternateSleepType + 1}/4)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>

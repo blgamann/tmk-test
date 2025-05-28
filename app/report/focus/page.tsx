@@ -30,6 +30,13 @@ export default function FocusReportPage() {
   const [results, setResults] = useState<FocusTestResults | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Debug 모드 설정 (개발용)
+  const [debug] = useState(false);
+
+  // 각 섹션별 다른 답변 보기 상태
+  const [showAlternatePersistence, setShowAlternatePersistence] = useState(0); // 0: 실제 결과, 1,2,3: 다른 결과들
+  const [showAlternateFocusType, setShowAlternateFocusType] = useState(0);
+
   // 테스트 결과 가져오기
   useEffect(() => {
     try {
@@ -57,6 +64,50 @@ export default function FocusReportPage() {
         return "";
     }
   };
+
+  // 모든 집중력 지속성 타입 정보
+  const getAllPersistenceInfo = () => [
+    {
+      type: "🔥 강한 집중 지속력",
+      message: getPersistenceTypeMessage("🔥강한 집중 지속력"),
+    },
+    {
+      type: "⛈️ 잘 변하는 집중 지속력",
+      message: getPersistenceTypeMessage("⛈️잘 변하는 집중 지속력"),
+    },
+    {
+      type: "🌪️ 약한 집중 지속력",
+      message: getPersistenceTypeMessage("🌪️약한 집중 지속력"),
+    },
+  ];
+
+  // 모든 집중력 환경 타입 정보
+  const getAllFocusTypeInfo = () => [
+    {
+      type: "주변 영향에 크게 휘둘리지 않는 무던형",
+      emoji: "🌳",
+      message:
+        "특정 공간이나 감각 조건이 없어도 몰입 가능, 환경 변화나 장소 이동에 크게 영향을 받는 편이에요. 카페, 도서관, 집, 지하철 어디서든 집중할 수 있는 사람이기 때문에, 오히려 환경의 변화를 잘 활용하면 좋아요. 일의 특성에 따라 어떤 환경이 좋을지 업무에 따라 환경을 배치해도 좋아요.",
+    },
+    {
+      type: "외부 자극에 민감한 감각형",
+      emoji: "🌬️",
+      message:
+        "주변 소음, 조명의 밝기, 정돈 상태, 향기 등 감각 자극이나, 알림, 진동, 배경 소리 등에 예민한 편이에요. 이런 자극들 때문에 집중이 잘 되기도 하고, 잘 맞지 않는 자극이면 쉽게 집중이 흐트러질 수 있어요. 정돈된 환경과 감각 조절이 집중력 향상에 매우 중요할 수 있으니, 조용하고 단순한 공간이나, 미니멀한 환경에서 집중해 보세요.",
+    },
+    {
+      type: "일정한 환경을 선호하는 루틴형",
+      emoji: "🗓️",
+      message:
+        "익숙한 환경과 일정한 루틴에서 집중력이 높아지는 스타일이에요. 고정된 자리나 특정 공간에서 집중력이 높아질 수 있고, 자리를 많이 이동하거나 환경이 많이 바뀌면 집중력이 사라질 수 있어요. 반복되는 루틴이 몰입을 높여주기도 하고요. 낯선 환경이나 갑작스러운 변화에 쉽게 흐름이 끊길 수 있으니, 장소를 잘 고려해서 일에 집중해 보세요.",
+    },
+    {
+      type: "시간대에 민감한 시간대형",
+      emoji: "⏰",
+      message:
+        "하루 중 특정 시간에 집중력이 가장 잘 발휘되는 스타일이에요. 생체 리듬에 맞춤 시간대별 집중이 가장 잘 맞아요. 시간에 따라 효율이 크게 달라지는 타입이라, 집중이 잘 되는 시간을 파악하고, 중요한 일은 그때 배치하면 좋아요. 생체리듬에 맞춰서 시간의 리듬을 찾으면, 집중력도 올라갈 수 있어요.",
+    },
+  ];
 
   // 집중력 유형 결정 및 메시지 반환
   const getFocusTypeInfo = () => {
@@ -134,6 +185,7 @@ export default function FocusReportPage() {
       <div className="text-[26px] text-black font-bold mb-16">
         나의 집중력 상태 보고서
       </div>
+
       <div className="flex flex-col gap-12">
         <div>
           <SectionTitle>첫 번째, 나의 집중력 지속 상태</SectionTitle>
@@ -143,12 +195,45 @@ export default function FocusReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {results.persistence.type}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {persistenceMessage}
-            </div>
+            {(() => {
+              const allPersistenceInfo = getAllPersistenceInfo();
+              const currentInfo =
+                showAlternatePersistence === 0
+                  ? {
+                      type: results.persistence.type
+                        .replace("🔥", "🔥 ")
+                        .replace("⛈️", "⛈️ ")
+                        .replace("🌪️", "🌪️ "),
+                      message: persistenceMessage,
+                    }
+                  : allPersistenceInfo[showAlternatePersistence - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.type}
+                    {debug && showAlternatePersistence === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternatePersistence((prev) => (prev + 1) % 4)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternatePersistence + 1}/4)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
 
@@ -160,12 +245,43 @@ export default function FocusReportPage() {
             }
           </div>
           <div className="rounded-[6px] bg-[#F9F9F9] py-[33px] px-[21px] mt-6">
-            <div className="text-[16px] text-black font-bold mb-3.5">
-              {focusTypeInfo.emoji} {focusTypeInfo.type}
-            </div>
-            <div className="text-[14px] text-black font-medium leading-[26px]">
-              {focusTypeInfo.message}
-            </div>
+            {(() => {
+              const allFocusTypeInfo = getAllFocusTypeInfo();
+              const currentInfo =
+                showAlternateFocusType === 0
+                  ? {
+                      emoji: focusTypeInfo.emoji,
+                      type: focusTypeInfo.type,
+                      message: focusTypeInfo.message,
+                    }
+                  : allFocusTypeInfo[showAlternateFocusType - 1];
+
+              return (
+                <>
+                  <div className="text-[16px] text-black font-bold mb-3.5">
+                    {currentInfo.emoji} {currentInfo.type}
+                    {debug && showAlternateFocusType === 0 && (
+                      <span className="ml-2 text-[12px] bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        나의 결과
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-black font-medium leading-[26px] mb-4">
+                    {currentInfo.message}
+                  </div>
+                  {debug && (
+                    <button
+                      onClick={() =>
+                        setShowAlternateFocusType((prev) => (prev + 1) % 5)
+                      }
+                      className="text-[12px] text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                    >
+                      다른 답변 보기 ({showAlternateFocusType + 1}/5)
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>
