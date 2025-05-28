@@ -330,7 +330,7 @@ export default function StatusMind() {
               onClick={() => handleBubbleToggle(4, 4)}
             />
             <ChatBubble
-              message="그럴수도 있지..다음을 기약한다."
+              message="그럴 수도 있지.. 실수를 객관적으로 되돌아보고 다음에 잘해보려고 한다."
               isSelected={selectedMindChoices[4]?.includes(5)}
               onClick={() => handleBubbleToggle(4, 5)}
             />

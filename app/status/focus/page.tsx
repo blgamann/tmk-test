@@ -73,22 +73,22 @@ export default function StatusFocus() {
         return (
           <div className="flex flex-col gap-4 w-full">
             <RatingScale
-              statement="한 가지 일을 할 때, 집중이 오래 유지된다"
+              statement="한 가지 일을 할 때, 집중이 오래 유지된다."
               onRating={(rating) => handleRating(1, 0, rating)}
               selectedValue={focusRatings[1][0]}
             />
             <RatingScale
-              statement="일하면서도 자꾸 딴 생각이 든다"
+              statement="일하면서도 자꾸 딴 생각이 든다."
               onRating={(rating) => handleRating(1, 1, rating)}
               selectedValue={focusRatings[1][1]}
             />
             <RatingScale
-              statement="일에 몰입하면 시간 가는 줄 모른다"
+              statement="일에 몰입하면 시간 가는 줄 모른다."
               onRating={(rating) => handleRating(1, 2, rating)}
               selectedValue={focusRatings[1][2]}
             />
             <RatingScale
-              statement="집중 상태가 쉽게 끊기지 않는다"
+              statement="집중 상태가 쉽게 끊기지 않는다."
               onRating={(rating) => handleRating(1, 3, rating)}
               selectedValue={focusRatings[1][3]}
             />
@@ -98,27 +98,27 @@ export default function StatusFocus() {
         return (
           <div className="flex flex-col gap-4 w-full">
             <ChatBubble
-              message="주변 소음이나 움직임에 예민하게 반응한다"
+              message="주변 소음이나 움직임에 예민하게 반응한다."
               isSelected={selectedFocusTypes[2].includes(1)}
               onClick={() => handleBubbleToggle(2, 1)}
             />
             <ChatBubble
-              message="일정한 공간에서 일할 때 집중이 대체로 더 잘 된다"
+              message="일정한 공간에서 일할 때 집중이 대체로 더 잘 된다."
               isSelected={selectedFocusTypes[2].includes(2)}
               onClick={() => handleBubbleToggle(2, 2)}
             />
             <ChatBubble
-              message="머리가 맑아지는 시간이 하루 중 일정하게 정해져 있다"
+              message="머리가 맑아지는 시간이 하루 중 일정하게 정해져 있다."
               isSelected={selectedFocusTypes[2].includes(3)}
               onClick={() => handleBubbleToggle(2, 3)}
             />
             <ChatBubble
-              message="특정 감각(음악, 향기, 조명 등)이 집중을 도와준다"
+              message="특정 감각(음악, 향기, 조명 등)이 집중을 도와준다."
               isSelected={selectedFocusTypes[2].includes(4)}
               onClick={() => handleBubbleToggle(2, 4)}
             />
             <ChatBubble
-              message="집중을 시작할 때 꼭 나만의 준비 과정이나 루틴이 필요하다"
+              message="집중을 시작할 때 꼭 나만의 준비 과정이나 루틴이 필요하다."
               isSelected={selectedFocusTypes[2].includes(5)}
               onClick={() => handleBubbleToggle(2, 5)}
             />
@@ -128,27 +128,27 @@ export default function StatusFocus() {
         return (
           <div className="flex flex-col gap-4 w-full">
             <ChatBubble
-              message="같은 일을 하더라도, 아침과 저녁에 따라 몰입의 정도가 다르다"
+              message="같은 일을 하더라도, 아침과 저녁에 따라 몰입의 정도가 다르다."
               isSelected={selectedFocusTypes[3].includes(6)}
               onClick={() => handleBubbleToggle(3, 6)}
             />
             <ChatBubble
-              message="집중 중일 때 누가 다가오는 기척만으로도 흐름이 깨지는 느낌이 든다"
+              message="집중 중일 때 누가 다가오는 기척만으로도 흐름이 깨지는 느낌이 든다."
               isSelected={selectedFocusTypes[3].includes(7)}
               onClick={() => handleBubbleToggle(3, 7)}
             />
             <ChatBubble
-              message="하루 중 정해진 시간에 집중이 가장 잘 된다"
+              message="하루 중 정해진 시간에 집중이 가장 잘 된다."
               isSelected={selectedFocusTypes[3].includes(8)}
               onClick={() => handleBubbleToggle(3, 8)}
             />
             <ChatBubble
-              message="특정 환경(카페, 도서관 등)에서 집중이 더 잘 된다"
+              message="특정 환경(카페, 도서관 등)에서 집중이 더 잘 된다."
               isSelected={selectedFocusTypes[3].includes(9)}
               onClick={() => handleBubbleToggle(3, 9)}
             />
             <ChatBubble
-              message="조명이 너무 밝거나 어두우면 집중이 흐트러진다"
+              message="조명이 너무 밝거나 어두우면 집중이 흐트러진다."
               isSelected={selectedFocusTypes[3].includes(10)}
               onClick={() => handleBubbleToggle(3, 10)}
             />
@@ -158,27 +158,27 @@ export default function StatusFocus() {
         return (
           <div className="flex flex-col gap-4 w-full">
             <ChatBubble
-              message="공간의 배치나 분위기에 따라 집중력이 확연히 달라지는 편이다"
+              message="공간의 배치나 분위기에 따라 집중력이 확연히 달라지는 편이다."
               isSelected={selectedFocusTypes[4].includes(11)}
               onClick={() => handleBubbleToggle(4, 11)}
             />
             <ChatBubble
-              message="휴대폰 알림 혹은 SNS 때문에 집중이 자주 깨진다"
+              message="휴대폰 알림 혹은 SNS 때문에 집중이 자주 깨진다."
               isSelected={selectedFocusTypes[4].includes(12)}
               onClick={() => handleBubbleToggle(4, 12)}
             />
             <ChatBubble
-              message="어떤 일을 할 때 '딱 그 정도'가 정해져 있는 편이다"
+              message="일을 할 때 일이 잘되는 나만의 장소가 정해져 있는 편이다."
               isSelected={selectedFocusTypes[4].includes(13)}
               onClick={() => handleBubbleToggle(4, 13)}
             />
             <ChatBubble
-              message="일정한 리듬이 흐트러지면 집중력도 흐트러진다"
+              message="일정한 리듬이 흐트러지면 집중력도 흐트러진다."
               isSelected={selectedFocusTypes[4].includes(14)}
               onClick={() => handleBubbleToggle(4, 14)}
             />
             <ChatBubble
-              message="공간이 어지럽거나 정돈되지 않으면 집중이 어렵다"
+              message="공간이 어지럽거나 정돈되지 않으면 집중이 어렵다."
               isSelected={selectedFocusTypes[4].includes(15)}
               onClick={() => handleBubbleToggle(4, 15)}
             />
@@ -188,22 +188,22 @@ export default function StatusFocus() {
         return (
           <div className="flex flex-col gap-4 w-full">
             <ChatBubble
-              message="소리나 냄새가 조금만 달라져도 신경이 쓰인다"
+              message="소리나 냄새가 조금만 달라져도 신경이 쓰인다."
               isSelected={selectedFocusTypes[5].includes(16)}
               onClick={() => handleBubbleToggle(5, 16)}
             />
             <ChatBubble
-              message="물건이 제자리에 있지 않으면 마음이 어수선해진다"
+              message="물건이 제자리에 있지 않으면 마음이 어수선해진다."
               isSelected={selectedFocusTypes[5].includes(17)}
               onClick={() => handleBubbleToggle(5, 17)}
             />
             <ChatBubble
-              message="집중이 잘 되는 시간대를 놓치면 다시 흐름을 잡기 어렵다"
+              message="집중이 잘 되는 시간대를 놓치면 다시 흐름을 잡기 어렵다."
               isSelected={selectedFocusTypes[5].includes(18)}
               onClick={() => handleBubbleToggle(5, 18)}
             />
             <ChatBubble
-              message="환경을 정리하고 나면 자연스럽게 집중할 준비가 된 기분이 든다"
+              message="환경을 정리하고 나면 자연스럽게 집중할 준비가 된 기분이 든다."
               isSelected={selectedFocusTypes[5].includes(19)}
               onClick={() => handleBubbleToggle(5, 19)}
             />
@@ -387,7 +387,7 @@ export default function StatusFocus() {
     if (step === 1) {
       return "나에게 해당되는 정도를 골라보세요.";
     } else if (step >= 2 && step <= 5) {
-      return "나에게 해당된다고 생각하는 것을 모두 골라주세요. (오래 고민하기 보다 직관적으로 선택하면 좋아요)";
+      return "나에게 해당된다고 생각하는 것을 모두 골라주세요. (해당되는 것을 모두 선택하세요)";
     }
     return "";
   };
