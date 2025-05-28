@@ -23,6 +23,7 @@ type MindType =
 export default function StatusMind() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [debug] = useState(false);
 
   // 각 상황별 선택 항목 저장
   const [selectedMindChoices, setSelectedMindChoices] = useState<{
@@ -505,12 +506,14 @@ export default function StatusMind() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-between bg-white">
       <ProgressBar currentStep={step} totalSteps={6} />
-      <div className="px-5">
-        <RealTimeMindScoreDisplay
-          currentStep={step}
-          selectedMindChoices={selectedMindChoices}
-        />
-      </div>
+      {debug && (
+        <div className="px-5">
+          <RealTimeMindScoreDisplay
+            currentStep={step}
+            selectedMindChoices={selectedMindChoices}
+          />
+        </div>
+      )}
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 7 && (
           <Guide

@@ -14,6 +14,7 @@ import ChatBubble from "@/app/components/ChatBubble";
 export default function StatusFocus() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [debug] = useState(false);
 
   // step 1 평가 응답 (집중 지속력 측정)
   const [focusRatings, setFocusRatings] = useState<{
@@ -451,13 +452,16 @@ export default function StatusFocus() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <ProgressBar currentStep={step} totalSteps={5} />
-      <div className="px-5">
-        <RealTimeFocusScoreDisplay
-          currentStep={step}
-          focusRatings={focusRatings}
-          selectedFocusTypes={selectedFocusTypes}
-        />
-      </div>
+
+      {debug && (
+        <div className="px-5">
+          <RealTimeFocusScoreDisplay
+            currentStep={step}
+            focusRatings={focusRatings}
+            selectedFocusTypes={selectedFocusTypes}
+          />
+        </div>
+      )}
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 6 && (
           <Guide

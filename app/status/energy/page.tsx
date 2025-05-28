@@ -68,6 +68,7 @@ const TIME_ENERGY_TYPE_MAPPING: {
 export default function StatusEnergy() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [debug] = useState(false);
   const [statusRatings, setStatusRating] = useState<{
     [key: number]: number[];
   }>({
@@ -745,15 +746,17 @@ export default function StatusEnergy() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <ProgressBar currentStep={step} totalSteps={10} />
-      <div className="px-5">
-        <RealTimeEnergyScoreDisplay
-          currentStep={step}
-          statusRatings={statusRatings}
-          selectedEnergyMethods={selectedEnergyMethods}
-          selectedTimeConditions={selectedTimeConditions}
-          sleepRatings={sleepRatings}
-        />
-      </div>
+      {debug && (
+        <div className="px-5">
+          <RealTimeEnergyScoreDisplay
+            currentStep={step}
+            statusRatings={statusRatings}
+            selectedEnergyMethods={selectedEnergyMethods}
+            selectedTimeConditions={selectedTimeConditions}
+            sleepRatings={sleepRatings}
+          />
+        </div>
+      )}
       <div className="w-full px-5 flex-1 flex flex-col">
         {step < 11 && (
           <Guide
