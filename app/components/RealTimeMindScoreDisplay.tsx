@@ -156,7 +156,6 @@ export default function RealTimeMindScoreDisplay({
     finalType,
     positiveScore,
     maxScore,
-    isEvenlyDistributed,
     allTypesLowOrEqual,
   } = getDominantMindType();
   const dominantTypeInfo = getMindTypeInfo(finalType);

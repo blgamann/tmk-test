@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import SectionTitle from "@/app/components/SectionTitle";
 import Button from "@/app/components/Button";
+import DownloadButtonSimple from "@/app/components/DownloadButtonSimple";
 import { useRouter } from "next/navigation";
+import BackButton from "@/app/components/BackButton";
 
 type MindType =
   | "불안"
@@ -350,7 +352,9 @@ export default function MindReportPage() {
   const mainDefense = getMainDefenseMechanism();
 
   return (
-    <div className="bg-white min-h-screen py-12 px-6">
+    <div id="mind-report-content" className="bg-white min-h-screen py-12 px-6">
+      <BackButton className="mb-8" />
+
       <div className="text-[26px] text-black font-bold mb-16">
         나의 마음 상태 보고서
       </div>
@@ -535,6 +539,12 @@ export default function MindReportPage() {
           );
         })()}
       </div>
+
+      <DownloadButtonSimple
+        targetElementId="mind-report-content"
+        filename="mind-report"
+        className="mt-12"
+      />
 
       <div className="mt-15">
         <Button activated={true} onClick={() => router.push("/report/summary")}>

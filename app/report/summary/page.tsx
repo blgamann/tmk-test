@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Button from "@/app/components/Button";
 import { useRouter } from "next/navigation";
 import SectionTitle from "@/app/components/SectionTitle";
+import DownloadButtonSimple from "@/app/components/DownloadButtonSimple";
+import BackButton from "@/app/components/BackButton";
 
 // 에너지 상태 관련 타입
 type EnergyType = "사람과의 연결" | "혼자만의 시간" | "감각 몰입";
@@ -388,7 +390,12 @@ export default function SummaryReportPage() {
   const mindInfoList = getMindInfoList();
 
   return (
-    <div className="bg-white min-h-screen py-12 px-6">
+    <div
+      id="summary-report-content"
+      className="bg-white min-h-screen py-12 px-6"
+    >
+      <BackButton className="mb-8" />
+
       <div className="text-[26px] text-black font-bold mb-16">
         현재 나의 종합 상태 결과를
         <br />
@@ -453,6 +460,12 @@ export default function SummaryReportPage() {
           </div>
         </div>
       </div>
+
+      <DownloadButtonSimple
+        targetElementId="summary-report-content"
+        filename="summary-report"
+        className="mt-12"
+      />
 
       <div className="mt-15">
         <Button activated={true} onClick={() => router.push("/")}>

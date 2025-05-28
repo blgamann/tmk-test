@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import SectionTitle from "@/app/components/SectionTitle";
 import Button from "@/app/components/Button";
+import DownloadButtonSimple from "@/app/components/DownloadButtonSimple";
 import { useRouter } from "next/navigation";
+import BackButton from "@/app/components/BackButton";
 
 type PersistenceType =
   | "🔥강한 집중 지속력"
@@ -181,7 +183,9 @@ export default function FocusReportPage() {
   const focusTypeInfo = getFocusTypeInfo();
 
   return (
-    <div className="bg-white min-h-screen py-12 px-6">
+    <div id="focus-report-content" className="bg-white min-h-screen py-12 px-6">
+      <BackButton className="mb-8" />
+
       <div className="text-[26px] text-black font-bold mb-16">
         나의 집중력 상태 보고서
       </div>
@@ -285,6 +289,12 @@ export default function FocusReportPage() {
           </div>
         </div>
       </div>
+
+      <DownloadButtonSimple
+        targetElementId="focus-report-content"
+        filename="focus-report"
+        className="mt-12"
+      />
 
       <div className="mt-15">
         <Button activated={true} onClick={() => router.push("/report/mind")}>

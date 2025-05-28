@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import SectionTitle from "@/app/components/SectionTitle";
 import Button from "@/app/components/Button";
+import DownloadButtonSimple from "@/app/components/DownloadButtonSimple";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import BackButton from "@/app/components/BackButton";
 
 type EnergyType = "사람과의 연결" | "혼자만의 시간" | "감각 몰입";
 type TimeEnergyType =
@@ -291,7 +292,12 @@ export default function EnergyReportPage() {
   const sleepRhythmInfo = getSleepRhythmInfo(results.sleepRhythm.type);
 
   return (
-    <div className="bg-white min-h-screen py-12 px-6">
+    <div
+      id="energy-report-content"
+      className="bg-white min-h-screen py-12 px-6"
+    >
+      <BackButton className="mb-8" />
+
       <div className="text-[26px] text-black font-bold mb-16">
         나의 에너지 상태 보고서
       </div>
@@ -530,16 +536,11 @@ export default function EnergyReportPage() {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 justify-center">
-        {/* <div className="flex flex-col items-center gap-2 mt-12">
-          <Image src="/share.svg" alt="Loading" width={40} height={100} />
-          <span className="text-xs">이미지 다운 받기</span>
-        </div> */}
-        <div className="flex flex-col items-center gap-2 mt-12">
-          <Image src="/download.svg" alt="Loading" width={40} height={100} />
-          <span className="text-xs">이미지 다운 받기</span>
-        </div>
-      </div>
+      <DownloadButtonSimple
+        targetElementId="energy-report-content"
+        filename="energy-report"
+        className="mt-12"
+      />
 
       <div className="mt-15">
         <Button activated={true} onClick={() => router.push("/report/focus")}>
