@@ -254,11 +254,11 @@ export default function StatusFocus() {
 
     let persistenceType;
     if (totalScore >= 4 && totalScore <= 9) {
-      persistenceType = "🔥집중 지속력 안정형";
+      persistenceType = "🔥강한 집중 지속력";
     } else if (totalScore >= 10 && totalScore <= 14) {
-      persistenceType = "⛈️집중 지속력 가변형";
+      persistenceType = "⛈️잘 변하는 집중 지속력";
     } else if (totalScore >= 15 && totalScore <= 20) {
-      persistenceType = "🌪️집중 흐름 불안정형";
+      persistenceType = "🌪️약한 집중 지속력";
     } else {
       persistenceType = "측정 중...";
     }

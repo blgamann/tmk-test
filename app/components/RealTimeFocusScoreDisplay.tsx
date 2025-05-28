@@ -50,11 +50,11 @@ export default function RealTimeFocusScoreDisplay({
   // 집중력 지속성 타입 계산
   const getPersistenceType = (score: number) => {
     if (score >= 4 && score <= 9) {
-      return "🔥 집중 지속력 안정형";
+      return "🔥 강한 집중 지속력";
     } else if (score >= 10 && score <= 14) {
-      return "⛈️ 집중 지속력 가변형";
+      return "⛈️ 잘 변하는 집중 지속력";
     } else if (score >= 15 && score <= 20) {
-      return "🌪️ 집중 흐름 불안정형";
+      return "🌪️ 약한 집중 지속력";
     } else {
       return "측정 중...";
     }
