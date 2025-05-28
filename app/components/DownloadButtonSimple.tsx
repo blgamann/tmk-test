@@ -2,7 +2,7 @@
 
 import { toPng } from "html-to-image";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface DownloadButtonSimpleProps {
   targetElementId: string;
@@ -16,6 +16,32 @@ export default function DownloadButtonSimple({
   className = "",
 }: DownloadButtonSimpleProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 모바일 환경 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent;
+      const isMobileUserAgent =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          userAgent
+        );
+      const isSmallScreen = window.innerWidth <= 768; // 768px 이하를 모바일로 간주
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+      return isMobileUserAgent || (isSmallScreen && isTouchDevice);
+    };
+
+    setIsMobile(checkMobile());
+
+    const handleResize = () => {
+      setIsMobile(checkMobile());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // 안전한 스타일 오버라이드
   const addSafeStyleOverride = () => {
@@ -200,6 +226,14 @@ export default function DownloadButtonSimple({
 
   const downloadAsImage = async () => {
     if (isDownloading) return;
+
+    // 모바일 환경에서는 다운로드 기능 제한
+    if (isMobile) {
+      alert(
+        "이미지 다운로드는 웹(PC 브라우저)에서만 가능합니다.\n\n모바일에서는 스크린샷 기능을 이용해주세요:\n\n• iPhone: 전원 버튼 + 볼륨 상 버튼\n• Android: 전원 버튼 + 볼륨 하 버튼\n\n또는 웹 브라우저(PC)에서 다시 접속해주세요."
+      );
+      return;
+    }
 
     try {
       setIsDownloading(true);
