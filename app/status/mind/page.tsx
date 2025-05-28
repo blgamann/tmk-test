@@ -436,7 +436,7 @@ export default function StatusMind() {
               </div>
               <div className="text-center text-[14px] text-black font-medium leading-[24px] whitespace-pre-line">
                 {
-                  "집중력, 에너지 테스트까지 완료하시면\n결과 보고서가 열립니다."
+                  "모든 테스트를 완료하시면\n결과 보고서가 열립니다."
                 }
               </div>
             </div>
